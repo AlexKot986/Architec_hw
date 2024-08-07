@@ -1,13 +1,17 @@
 package seminar03.cars;
 
-import seminar03.fuelstations.IFuel;
+import seminar03.fuelstations.IFuelPro;
 import seminar03.washstations.IDirty;
 
-public class SportCar extends Car implements IFuel, IDirty {
+public class SportCar extends Car implements IFuelPro, IDirty {
+
+    private int fuelTankCapacity;
+    private int fuelAmount;
+    private boolean isDirty;
 
     public SportCar(int wheels, Color color, int fuelTankCapacity) {
-        super(wheels, color, fuelTankCapacity);
-        this.engineType = EngineType.GASOLINE;
+        super(wheels, color, EngineType.GASOLINE);
+        this.fuelTankCapacity = fuelTankCapacity;
     }
 
     @Override
@@ -21,22 +25,18 @@ public class SportCar extends Car implements IFuel, IDirty {
     }
 
     @Override
-    public void fuel(int fuelCount) {
-        if (this.fuelAmount < this.fuelTankCapacity) {
-            int value = this.fuelTankCapacity - this.fuelAmount;
-            if (value > fuelCount)
-                this.fuelAmount += fuelCount;
-            else
-                this.fuelAmount = this.fuelTankCapacity;
-        }
-        else
-            System.out.println(this.getClass().getSimpleName() + " в заправке не нуждается");
-
+    public int getFuelAmount() {
+        return this.fuelAmount;
     }
 
     @Override
-    public int getFuelAmount() {
-        return this.fuelAmount;
+    public void setFuelAmount(int value) {
+        int fuelToFull = this.fuelTankCapacity - this.fuelAmount;
+        if (value > fuelToFull) {
+            this.fuelAmount += fuelToFull;
+        }
+        else
+            this.fuelAmount += value;
     }
 
     @Override
@@ -53,4 +53,6 @@ public class SportCar extends Car implements IFuel, IDirty {
     public void setDirty(boolean dirty) {
         this.isDirty = dirty;
     }
+
+
 }

@@ -1,7 +1,6 @@
 package seminar03.fuelstations;
 
 public interface IFuel {
-    void fuel(int fuel);
-    int getFuelAmount();
-    int getFuelTankCapacity();
+
+    void setFuelAmount(int value);
 }
