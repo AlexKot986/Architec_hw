@@ -21,6 +21,7 @@ public class Program {
             System.out.println("5. Отобразить все текстуры проекта");
             System.out.println("6. Выполнить рендер всех моделей");
             System.out.println("7. Выполнить рендер модели");
+            System.out.println("8. Удалить модель");
             System.out.println("0. ЗАВЕРШЕНИЕ РАБОТЫ ПРИЛОЖЕНИЯ");
             System.out.println("Пожалуйста, выберите пункт меню.");
             if (scanner.hasNextInt()) {
@@ -59,6 +60,17 @@ public class Program {
                                 int modelNo = scanner.nextInt();
                                 scanner.nextLine();
                                 editor3D.renderModel(modelNo);
+                            }
+                            else {
+                                System.out.println("Номер модели указан не корректно.");
+                            }
+                            break;
+                        case 8:
+                            System.out.printf("Укажите номер модели: ");
+                            if (scanner.hasNextInt()) {
+                                int modelNo = scanner.nextInt();
+                                scanner.nextLine();
+                                editor3D.removeModel(modelNo);
                             }
                             else {
                                 System.out.println("Номер модели указан не корректно.");
@@ -182,6 +194,18 @@ class Editor3D implements UILayer {
         long endTime = (System.currentTimeMillis() - startTime);
         System.out.printf("Операция выполнена за %d mc.\n", endTime);
     }
+
+    @Override
+    public void removeModel(int i) {
+        // Предусловие
+        checkProjectFile();
+
+        ArrayList<Model3D> models = (ArrayList<Model3D>) businessLogicalLayer.getAllModels();
+        if (i < 0 || i > models.size() - 1)
+            throw new RuntimeException("Номер модели указан некорректно.");
+        businessLogicalLayer.removeModel(models.get(i));
+        System.out.println("Модель удалена!");
+    }
 }
 
 /**
@@ -195,6 +219,7 @@ interface UILayer {
     void printAllTextures();
     void renderAll();
     void renderModel(int i);
+    void removeModel(int i);
 }
 
 /**
@@ -229,6 +254,12 @@ class EditorBusinessLogicalLayer implements BusinessLogicalLayer {
         getAllModels().forEach(m -> processRender(m));
     }
 
+    @Override
+    public void removeModel(Model3D model3D) {
+        databaseAccess.removeEntity(model3D);
+    }
+
+
     private void processRender(Model3D model3D) {
         try {
             Thread.sleep(2500 - random.nextInt(2000));
@@ -248,6 +279,7 @@ interface BusinessLogicalLayer {
     Collection<Model3D> getAllModels();
     void renderModel(Model3D model3D);
     void renderAllModels();
+    void removeModel(Model3D model3D);
 }
 
 /**
